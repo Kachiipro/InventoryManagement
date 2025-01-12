@@ -6,8 +6,6 @@ from .serializers import ItemSerializer, CategorySerializer, InventoryLogsSerial
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.decorators import action
 from .permissions import Isowner
 
@@ -15,17 +13,17 @@ from .permissions import Isowner
 # Create your views here.
 
 User = get_user_model()
-
+# viewsest to manage category
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class  = CategorySerializer
     permission_classes = [IsAuthenticated]
-    
+# viewset to manage supplier
 class SupplierViewSet(ModelViewSet):
     queryset = Supplier.objects.all()
     serializer_class  = SupplierSerializer
     permission_classes = [IsAuthenticated]
-
+# viewset to manage user
 class UserViewSet(ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -44,7 +42,7 @@ class UserViewSet(ReadOnlyModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         
 
-
+#viewset to manage inventory items
 class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -60,7 +58,7 @@ class ItemViewSet(ModelViewSet):
 
 
    
-    
+    # module to increase stock and subtract sold items
     
     @action(methods=['post'], detail=True)  # restock
     def restock(self, request, pk=None):
@@ -101,7 +99,7 @@ class ItemViewSet(ModelViewSet):
 
 
 
-    
+# viewset to manage inventory logs
 class ActionViewSet(ReadOnlyModelViewSet):
     queryset = InventoryLogs.objects.all()
     serializer_class= InventoryLogsSerializer
@@ -109,10 +107,9 @@ class ActionViewSet(ReadOnlyModelViewSet):
 
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = TokenObtainPairSerializer
 
-    
+
+    #viewset to track lowstock
 class InventoryLevelview(ReadOnlyModelViewSet):
     queryset = Item.objects.all()
     serializer_class = InventoryLevelSerializer
